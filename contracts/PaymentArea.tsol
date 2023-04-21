@@ -1,0 +1,26 @@
+contract PaymentArea {
+    address public owner;
+    uint public balance;
+    uint public lastPaymentTime;
+    uint public lastPaymentAmount;
+    uint public constant PAYMENT_INTERVAL = 1 minutes;
+
+    function PaymentArea() {
+        owner = msg.sender;
+    }
+
+    function() payable {
+        if (msg.value > 0) {
+            balance += msg.value;
+            lastPaymentTime = now;
+            lastPaymentAmount = msg.value;
+        }
+    }
+
+    function withdraw() {
+        if (msg.sender != owner) throw;
+        if (this.balance == 0) throw;
+        if (now < lastPaymentTime + PAYMENT_INTERVAL) throw;
+        if (!owner.send(this.balance)) throw;
+    }
+}
