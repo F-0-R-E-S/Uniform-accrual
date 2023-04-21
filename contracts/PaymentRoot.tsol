@@ -1,0 +1,65 @@
+pragma ever-solidity >= 0.61.2;
+pragma AbiHeader expire;
+pragma AbiHeader pubkey;
+
+import "./libraries/Errors.tsol";
+import "./libraries/Gas.tsol";
+import "./PaymentArea.tsol"
+
+contract Sample {
+
+    struct Payment {
+        uint64 amount;
+        uint32 dateEnd;
+        address recipient;
+    };
+
+    function getAreaAddress(address _user) public view responsible returns (address) {
+        return { value: 0, flag: MsgFlag.REMAINING_GAS, bounce: false } address(
+            tvm.hash(_buildAccountInitData(_user))
+        );
+    };
+
+    function _deployArea(address _user, address send_gas_to) internal view returns (address) {
+        return new PaymentArea{
+            stateInit: _buildAccountInitData(_user),
+            value: Gas.ACCOUNT_DEPLOY_VALUE
+        }(send_gas_to);
+    };
+
+    function _buildAccountInitData(address _user) internal view returns (TvmCell) {
+        return tvm.buildStateInit({
+            contr: PaymentArea,
+            varInit: {
+                root: address(this),
+                user: _user
+            }
+        });
+    };
+
+    function _deployPayment(
+        uint64 amount,
+        uint32 dateEnd,
+        address recipient,
+        address send_gas_to
+    ) private returns (address) {
+        address addr = getAreaAddress(address(this));
+        return addr;
+    };
+
+    function paymentRegistration(
+        uint64 amount,
+        uint32 dateEnd,
+        address recipient,
+        address send_gas_to
+    ) external {
+        require (msg.value >= Gas.MAIL_DEPLOY_VALUE + Gas.SAVE_MAIL_VALUE * receivers.length + 0.01 ever * receivers.length, Errors.LOW_MSG_VALUE);
+        address recipientPayment = _deployPayment(
+            amount,
+            dateEnd,
+            recipient,
+            send_gas_to
+        );
+        send_gas_to.transfer({ value: 0, bounce: false, flag: MsgFlag.ALL_NOT_RESERVED });
+    };
+}

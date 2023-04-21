@@ -1,0 +1,13 @@
+pragma ever-solidity ^0.62.0;
+
+
+library Errors {
+    uint16 constant NOT_OWNER = 1000;
+    uint16 constant NOT_ACTIVE = 1001;
+    uint16 constant WRONG_PUBKEY = 1002;
+    uint16 constant LOW_MSG_VALUE = 1003;
+    uint16 constant NOT_ROOT = 1004;
+    uint16 constant BAD_MAIL_ADDRESS = 1005;
+    uint16 constant NOT_MAIL_ACC = 1006;
+    uint16 constant BAD_INPUT = 1007;
+}
